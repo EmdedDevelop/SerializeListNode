@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SerializeListNode/SerializeListNode.vcxproj" Id="1f2bc200-6d75-4033-88d4-80caad0b49a3" />
+</Solution>
