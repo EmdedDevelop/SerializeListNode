@@ -6,6 +6,9 @@
 #include <unordered_map>
 
 
+using std::cout;
+
+
 struct ListNode {
     ListNode* prev = nullptr;
     ListNode* next = nullptr;
@@ -30,7 +33,7 @@ ListNode* buildListFromText(const std::string& textPath,
     std::vector<int>& randIndices) {
     std::ifstream fin(textPath);
     if (!fin) {
-        std::cerr << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ð²Ñ…Ð¾Ð´Ð½Ð¾Ð¹ Ñ„Ð°Ð¹Ð»: " << textPath << "\n";
+        std::cerr << "Íå óäàëîñü îòêðûòü âõîäíîé ôàéë: " << textPath << "\n";
         return nullptr;
     }
 
@@ -40,9 +43,9 @@ ListNode* buildListFromText(const std::string& textPath,
     std::string line;
     while (std::getline(fin, line)) {
         if (line.empty()) continue;
-        auto pos = line.find(';');
+        auto pos = line.rfind(';');
         if (pos == std::string::npos) {
-            std::cerr << "ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ ÑÑ‚Ñ€Ð¾ÐºÐ¸: " << line << "\n";
+            std::cerr << "Íåïðàâèëüíûé ôîðìàò ñòðîêè: " << line << "\n";
             for (auto* node : outNodes) {
                 delete node;
             }
@@ -59,7 +62,7 @@ ListNode* buildListFromText(const std::string& textPath,
             randIndex = std::stoi(randStr);
         }
         catch (...) {
-            std::cerr << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ñ€Ð°Ð·Ð¾Ð±Ñ€Ð°Ñ‚ÑŒ rand_index: " << randStr << "\n";
+            std::cerr << "Íå óäàëîñü ðàçîáðàòü rand_index: " << randStr << "\n";
             return nullptr;
         }
 
@@ -93,7 +96,7 @@ bool serializeToBinaryNextOrder(const std::string& binPath, ListNode* head) {
     uint32_t n = static_cast<uint32_t>(ordered.size());
     std::ofstream fout(binPath, std::ios::binary);
     if (!fout) {
-        std::cerr << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ð¾Ð¹ Ð±Ð¸Ð½Ð°Ñ€Ð½Ñ‹Ð¹ Ñ„Ð°Ð¹Ð»: " << binPath << "\n";
+        std::cerr << "Íå óäàëîñü îòêðûòü âûõîäíîé áèíàðíûé ôàéë: " << binPath << "\n";
         return false;
     }
 
@@ -125,7 +128,7 @@ bool serializeToBinaryNextOrder(const std::string& binPath, ListNode* head) {
 ListNode* deserializeFromBinary(const std::string& binPath, std::vector<ListNode*>& outNodes) {
     std::ifstream fin(binPath, std::ios::binary);
     if (!fin) {
-        std::cerr << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ Ð²Ñ…Ð¾Ð´Ð½Ð¾Ð¹ Ñ„Ð°Ð¹Ð»: " << binPath << "\n";
+        std::cerr << "Íå óäàëîñü îòêðûòü âõîäíîé ôàéë: " << binPath << "\n";
         return nullptr;
     }
 
@@ -176,12 +179,12 @@ int main() {
     std::vector<int> randIdx;
     ListNode* head = buildListFromText("inlet.in", nodes, randIdx);
     if (!head) {
-        std::cerr << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ð¾ÑÑ‚Ñ€Ð¾ÐµÐ½Ð¸Ñ ÑÐ¿Ð¸ÑÐºÐ° Ð¸Ð· Ð²Ñ…Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ñ„Ð°Ð¹Ð»Ð°.\n";
+        std::cerr << "Îøèáêà ïîñòðîåíèÿ ñïèñêà èç âõîäíîãî ôàéëà.\n";
         return 1;
     }
 
     if (!serializeToBinaryNextOrder("outlet.out", head)) {
-        std::cerr << "ÐžÑˆÐ¸Ð±ÐºÐ° ÑÐµÑ€Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð² Ð±Ð¸Ð½Ð°Ñ€Ð½Ñ‹Ð¹ Ñ„Ð°Ð¹Ð».\n";
+        std::cerr << "Îøèáêà ñåðèàëèçàöèè â áèíàðíûé ôàéë.\n";
         deleteList(head);
         return 1;
     }
@@ -189,17 +192,19 @@ int main() {
     std::vector<ListNode*> restored;
     ListNode* restoredHead = deserializeFromBinary("outlet.out", restored);
     if (restoredHead) {
-        std::cout << "Ð£ÑÐ¿ÐµÑˆÐ½Ð¾ Ð´ÐµÑÐµÑ€Ð¸Ð°Ð»Ð¸Ð·Ð¾Ð²Ð°Ð½Ð¾ " << restored.size() << " ÑƒÐ·Ð»Ð°(Ð¾Ð²) \n";
+        cout << "Óñïåøíî äåñåðèàëèçîâàíî " << restored.size() << " óçëà(îâ) \n";
 
-        std::cout << "Ð¡Ð¿Ð¸ÑÐ¾Ðº (next): ";
+        cout << "Ñïèñîê (next): ";
         for (ListNode* cur = restoredHead; cur != nullptr; cur = cur->next) {
-            std::cout << cur->data;
-            if (cur->next) std::cout << " -> ";
+            cout << cur->data;
+            if (cur->next) cout << " -> ";
         }
-        std::cout << "\n";
+        cout << "\n";
 
         deleteList(restoredHead);
     }
+
+    delete head;
 
     return 0;
 }
