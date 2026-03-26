@@ -189,6 +189,8 @@ int main() {
         return 1;
     }
 
+    cout << "Now it's time!";
+
     std::vector<ListNode*> restored;
     ListNode* restoredHead = deserializeFromBinary("outlet.out", restored);
     if (restoredHead) {
